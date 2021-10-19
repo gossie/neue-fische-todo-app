@@ -12,6 +12,7 @@ jobs:
           java-version: 17
       - name: verify
         run: mvn -B verify
+        working-directory: ${{env.working-directory}}
   build-frontend:
     runs-on: ubuntu-latest
     env:
