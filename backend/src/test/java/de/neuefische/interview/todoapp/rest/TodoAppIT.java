@@ -1,6 +1,7 @@
 package de.neuefische.interview.todoapp.rest;
 
 import static de.neuefische.interview.todoapp.rest.TodoListDTOAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,39 @@ class TodoAppIT {
 				.getResponseBody();
 		
 		assertThat(todoList)
+				.hasSize(1)
+				.item(0, item -> item
+						.hasTitle("Einkaufen")
+						.hasStatus("DONE"));
+		
+		todoList = webTestClient
+				.get()
+				.uri(todoList.getLink("self").map(Link::getHref).orElseThrow())
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus().isOk()
+				.expectBody(TodoListDTO.class)
+				.returnResult()
+				.getResponseBody();
+		
+		assertThat(todoList)
+				.hasSize(1)
+				.item(0, item -> item
+						.hasTitle("Einkaufen")
+						.hasStatus("DONE"));
+		
+		var allLists = webTestClient
+				.get()
+				.uri("/todolists")
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus().isOk()
+				.expectBodyList(TodoListDTO.class)
+				.returnResult()
+				.getResponseBody();
+		
+		assertThat(allLists).hasSize(1);
+		assertThat(allLists.get(0))
 				.hasSize(1)
 				.item(0, item -> item
 						.hasTitle("Einkaufen")
