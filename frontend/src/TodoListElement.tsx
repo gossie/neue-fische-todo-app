@@ -40,7 +40,7 @@ export default function TodoListElement(props: TodoListProps) {
 
     return (
         <div>
-            <input type="text" value={title} onChange={(evt) => setTitle(evt.target.value)} /> <button onClick={() => createTodoItem()}>Item erstellen</button>
+            <input type="text" value={title} onKeyUp={(evt) => {if (evt.keyCode === 13) createTodoItem();}} onChange={(evt) => setTitle(evt.target.value)} /> <button onClick={() => createTodoItem()}>Item erstellen</button>
             <ul>
                 {openItems}
                 {doneItems}

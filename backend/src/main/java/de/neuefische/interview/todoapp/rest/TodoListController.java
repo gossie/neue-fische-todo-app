@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.neuefische.interview.todoapp.core.TodoListService;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -26,6 +27,13 @@ public class TodoListController {
 	private final TodoListService todoListService;
 	private final TodoListMapper todoListMapper;
 	private final TodoItemMapper todoItemMapper;
+	
+	@GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
+	public Flux<TodoListDTO> getTodoLists() {
+		return todoListService.determineTodoLists()
+				.map(todoListMapper::map)
+				.flatMap(this::addLinks);
+	}
 	
 	@PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(code = HttpStatus.CREATED)

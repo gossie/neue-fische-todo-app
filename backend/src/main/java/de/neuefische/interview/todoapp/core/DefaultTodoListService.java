@@ -1,12 +1,18 @@
 package de.neuefische.interview.todoapp.core;
 
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 class DefaultTodoListService implements TodoListService {
 
 	private final TodoListRepository todoListRepository;
+
+	@Override
+	public Flux<TodoList> determineTodoLists() {
+		return todoListRepository.determineTodoLists();
+	}
 
 	@Override
 	public Mono<TodoList> addItem(String id, TodoItem item) {
@@ -22,8 +28,7 @@ class DefaultTodoListService implements TodoListService {
 
 	@Override
 	public Mono<TodoList> determineTodoList(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return todoListRepository.determineTodoList(id);
 	}
 
 	@Override

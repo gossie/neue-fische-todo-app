@@ -19,6 +19,7 @@ import de.neuefische.interview.todoapp.core.Status;
 import de.neuefische.interview.todoapp.core.TodoItem;
 import de.neuefische.interview.todoapp.core.TodoList;
 import de.neuefische.interview.todoapp.core.TodoListService;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @WebFluxTest(controllers = { TodoListController.class })
@@ -30,6 +31,29 @@ public class TodoListControllerTest {
 
 	@MockBean
 	private TodoListService todoListService;
+	
+	@Test
+	void testThatAllTodoListsAreDetermined() {
+		when(todoListService.determineTodoLists())
+				.thenReturn(Flux.just(new TodoList("4711"), (new TodoList("4712"))));
+				
+		var expectedTodoLists = List.of(
+				new TodoListDTO(Collections.emptyList())
+						.add(Link.of("/todolists/4711", "self"))
+						.add(Link.of("/todolists/4711/items", "createItem")),
+				new TodoListDTO(Collections.emptyList())
+						.add(Link.of("/todolists/4712", "self"))
+						.add(Link.of("/todolists/4712/items", "createItem"))
+		);
+		
+		webTestClient
+				.get()
+				.uri("/todolists")
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus().isOk()
+				.expectBodyList(TodoListDTO.class).isEqualTo(expectedTodoLists);
+	}
 	
 	@Test
 	void testCreateTodoList() {
