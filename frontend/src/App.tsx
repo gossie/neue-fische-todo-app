@@ -45,7 +45,7 @@ function App() {
 
     const listElements = existingTodoLists.map((list: TodoList, index: number) =>
         <li>
-            <a href="#" onClick={() => selectTodoList(list)}>TODO List {index + 1}</a>
+            <div className="clickable" onClick={() => selectTodoList(list)}>TODO List {index + 1}</div>
         </li>
     );
 
